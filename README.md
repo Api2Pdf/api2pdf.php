@@ -41,7 +41,7 @@ All usage starts by calling the import command and initializing the client by pa
 
 Once you initialize the client, you can make calls like so:
 
-    $api_response = $a2p_client.headless_chrome_from_html('<p>Hello, World</p>');
+    $api_response = $a2p_client->headless_chrome_from_html('<p>Hello, World</p>');
     echo($api_response->pdf);
     
 ### Result Format
@@ -62,31 +62,31 @@ An object is returned from every API call. If a call is unsuccessful then `succe
 
 **Convert HTML to PDF**
 
-    $api_response = $a2p_client.wkhtmltopdf_from_html('<p>Hello, World</p>');
+    $api_response = $a2p_client->wkhtmltopdf_from_html('<p>Hello, World</p>');
     
 **Convert HTML to PDF (load PDF in browser window and specify a file name)**
 
-    $api_response = $a2p_client.wkhtmltopdf_from_html('<p>Hello, World</p>', $inline = true, $filename = 'test.pdf');
+    $api_response = $a2p_client->wkhtmltopdf_from_html('<p>Hello, World</p>', $inline = true, $filename = 'test.pdf');
     
 **Convert HTML to PDF (use keyword arguments for advanced wkhtmltopdf settings)**
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
     $options = array("orientation"=>"landscape", "pageSize"=>"A4");
-    $api_response = $a2p_client.wkhtmltopdf_from_html('<p>Hello, World</p>', $options = $options);
+    $api_response = $a2p_client->wkhtmltopdf_from_html('<p>Hello, World</p>', $options = $options);
 
 **Convert URL to PDF**
 
-    $api_response = $a2p_client.wkhtmltopdf_from_url('http://www.api2pdf.com');
+    $api_response = $a2p_client->wkhtmltopdf_from_url('http://www.api2pdf.com');
     
 **Convert URL to PDF (load PDF in browser window and specify a file name)**
 
-    $api_response = $a2p_client.wkhtmltopdf_from_url('http://www.api2pdf.com', $inline = true, $filename = 'test.pdf');
+    $api_response = $a2p_client->wkhtmltopdf_from_url('http://www.api2pdf.com', $inline = true, $filename = 'test.pdf');
     
 **Convert URL to PDF (use keyword arguments for advanced wkhtmltopdf settings)**
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
     $options = array("orientation"=>"landscape", "pageSize"=>"A4");
-    $api_response = $a2p_client.wkhtmltopdf_from_url('http://www.api2pdf.com', $options = $options);
+    $api_response = $a2p_client->wkhtmltopdf_from_url('http://www.api2pdf.com', $options = $options);
 
 
 ---
@@ -95,31 +95,31 @@ An object is returned from every API call. If a call is unsuccessful then `succe
 
 **Convert HTML to PDF**
 
-    $api_response = $a2p_client.headless_chrome_from_html('<p>Hello, World</p>');
+    $api_response = $a2p_client->headless_chrome_from_html('<p>Hello, World</p>');
     
 **Convert HTML to PDF (load PDF in browser window and specify a file name)**
 
-    $api_response = $a2p_client.headless_chrome_from_html('<p>Hello, World</p>', $inline = true, $filename = 'test.pdf');
+    $api_response = $a2p_client->headless_chrome_from_html('<p>Hello, World</p>', $inline = true, $filename = 'test.pdf');
     
 **Convert HTML to PDF (use keyword arguments for advanced Headless Chrome settings)**
 [View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
 
     $options = array("landscape"=>true, "printBackground"=>false);
-    $api_response = $a2p_client.headless_chrome_from_html('<p>Hello, World</p>', $options = $options);
+    $api_response = $a2p_client->headless_chrome_from_html('<p>Hello, World</p>', $options = $options);
 
 **Convert URL to PDF**
 
-    $api_response = $a2p_client.headless_chrome_from_url('http://www.api2pdf.com');
+    $api_response = $a2p_client->headless_chrome_from_url('http://www.api2pdf.com');
     
 **Convert URL to PDF (load PDF in browser window and specify a file name)**
 
-    $api_response = $a2p_client.headless_chrome_from_url('http://www.api2pdf.com', $inline = true, $filename = 'test.pdf');
+    $api_response = $a2p_client->headless_chrome_from_url('http://www.api2pdf.com', $inline = true, $filename = 'test.pdf');
     
 **Convert URL to PDF (use keyword arguments for advanced Headless Chrome settings)**
 [View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
 
     $options = array("landscape"=>true, "printBackground"=>false);
-    $api_response = a2p_client.headless_chrome_from_url('http://www.api2pdf.com', $options = $options);
+    $api_response = a2p_client->headless_chrome_from_url('http://www.api2pdf.com', $options = $options);
     
 ---
 
@@ -133,11 +133,11 @@ You must provide a url to the file. Our engine will consume the file at that URL
 
 **Convert Microsoft Office Document or Image to PDF**
 
-    $api_response = $a2p_client.libreoffice_convert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx');
+    $api_response = $a2p_client->libreoffice_convert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx');
     
 **Convert Microsoft Office Document or Image to PDF (load PDF in browser window and specify a file name)**
 
-    $api_response = $a2p_client.libreoffice_convert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', $inline = true, $filename = 'test.pdf');
+    $api_response = $a2p_client->libreoffice_convert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', $inline = true, $filename = 'test.pdf');
     
 ---
     
@@ -148,10 +148,10 @@ To use the merge endpoint, supply a list of urls to existing PDFs. The engine wi
 **Merge PDFs from list of URLs to existing PDFs**
 
     $links_to_pdfs = array('https://LINK-TO-PDF', 'https://LINK-TO-PDF');
-    $merge_result = $a2p_client.merge(links_to_pdfs)
+    $merge_result = $a2p_client->merge(links_to_pdfs)
 
 **Merge PDFs from list of URLs to existing PDFs (load PDF in browser window and specify a file name)**
 
     $links_to_pdfs = array('https://LINK-TO-PDF', 'https://LINK-TO-PDF');
-    $merge_result = $a2p_client.merge(links_to_pdfs, $inline = true, $filename = 'test.pdf');
+    $merge_result = $a2p_client->merge(links_to_pdfs, $inline = true, $filename = 'test.pdf');
     
