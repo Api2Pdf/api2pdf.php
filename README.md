@@ -37,7 +37,7 @@ All usage starts by calling the import command and initializing the client by pa
 
     require ('api2pdf.php'); //or wherever you have stored the file
     
-    $a2p_client = Api2Pdf('YOUR-API-KEY');
+    $a2p_client = new Api2PdfLibrary('YOUR-API-KEY');
 
 Once you initialize the client, you can make calls like so:
 
