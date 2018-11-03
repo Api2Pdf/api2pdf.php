@@ -68,7 +68,7 @@ An object is returned from every API call. If a call is unsuccessful then `succe
 
     $api_response = $a2p_client->wkhtmltopdf_from_html('<p>Hello, World</p>', $inline = true, $filename = 'test.pdf');
     
-**Convert HTML to PDF (use keyword arguments for advanced wkhtmltopdf settings)**
+**Convert HTML to PDF (use arguments for advanced wkhtmltopdf settings)**
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
     $options = array("orientation"=>"landscape", "pageSize"=>"A4");
@@ -82,11 +82,11 @@ An object is returned from every API call. If a call is unsuccessful then `succe
 
     $api_response = $a2p_client->wkhtmltopdf_from_url('http://www.api2pdf.com', $inline = true, $filename = 'test.pdf');
     
-**Convert URL to PDF (use keyword arguments for advanced wkhtmltopdf settings)**
+**Convert URL to PDF (use arguments for advanced wkhtmltopdf settings)**
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
     $options = array("orientation"=>"landscape", "pageSize"=>"A4");
-    $api_response = $a2p_client->wkhtmltopdf_from_url('http://www.api2pdf.com', $options = $options);
+    $api_response = $a2p_client->wkhtmltopdf_from_url('http://www.api2pdf.com', $inline = true, $filename = 'test.pdf', $options = $options);
 
 
 ---
@@ -101,11 +101,11 @@ An object is returned from every API call. If a call is unsuccessful then `succe
 
     $api_response = $a2p_client->headless_chrome_from_html('<p>Hello, World</p>', $inline = true, $filename = 'test.pdf');
     
-**Convert HTML to PDF (use keyword arguments for advanced Headless Chrome settings)**
+**Convert HTML to PDF (use arguments for advanced Headless Chrome settings)**
 [View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
 
     $options = array("landscape"=>true, "printBackground"=>false);
-    $api_response = $a2p_client->headless_chrome_from_html('<p>Hello, World</p>', $options = $options);
+    $api_response = $a2p_client->headless_chrome_from_html('<p>Hello, World</p>', $inline = true, $filename = 'test.pdf', $options = $options);
 
 **Convert URL to PDF**
 
@@ -115,11 +115,11 @@ An object is returned from every API call. If a call is unsuccessful then `succe
 
     $api_response = $a2p_client->headless_chrome_from_url('http://www.api2pdf.com', $inline = true, $filename = 'test.pdf');
     
-**Convert URL to PDF (use keyword arguments for advanced Headless Chrome settings)**
+**Convert URL to PDF (use arguments for advanced Headless Chrome settings)**
 [View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
 
     $options = array("landscape"=>true, "printBackground"=>false);
-    $api_response = a2p_client->headless_chrome_from_url('http://www.api2pdf.com', $options = $options);
+    $api_response = $a2p_client->headless_chrome_from_url('http://www.api2pdf.com', $inline = true, $filename = 'test.pdf', $options = $options);
     
 ---
 
