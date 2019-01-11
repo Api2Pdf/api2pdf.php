@@ -72,7 +72,7 @@ An object is returned from every API call. If a call is unsuccessful then `succe
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
     $options = array("orientation"=>"landscape", "pageSize"=>"A4");
-    $api_response = $a2p_client->wkhtmltopdf_from_html('<p>Hello, World</p>', $options = $options);
+    $api_response = $a2p_client->wkhtmltopdf_from_html('<p>Hello, World</p>', $inline = true, $filename = 'test.pdf', $options = $options);
 
 **Convert URL to PDF**
 
