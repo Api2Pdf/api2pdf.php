@@ -1,5 +1,5 @@
 {
-  "name": "api2pdf/api2pdf",
+  "name": "api2pdf/api2pdf.php",
   "description": "A client library for API2PDF service",
   "license": "MIT",
   "homepage": "https://www.api2pdf.com",

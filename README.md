@@ -25,7 +25,7 @@ Add this repository to your Composer file:
 
 Run the following from command line:
 
-``$ composer require api2pdf/api2pdf``
+``$ composer require api2pdf/api2pdf.php:dev-master``
 
 ## <a name="resources"></a>Resources
 
