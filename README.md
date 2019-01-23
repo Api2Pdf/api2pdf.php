@@ -27,6 +27,17 @@ Run the following from command line:
 
 ``$ composer require api2pdf/api2pdf.php:dev-master``
 
+## Usage without Composer
+
+Copy api2pdf.php directory to a sub-directory in your project, then add the following in the beginning of your PHP file:
+
+```
+require_once 'api2pdf.php/src/Api2Pdf.php';
+require_once 'api2pdf.php/src/ApiResult.php';
+
+use Api2Pdf\Api2Pdf;
+```
+
 ## <a name="resources"></a>Resources
 
 Resources this API supports:
@@ -164,7 +175,7 @@ Additional attributes include the total data usage in, out, and the cost for the
             'printBackground' => false
         ]
     );        
-    $result = $apiClient->headless_chrome_from_url('http://www.api2pdf.com');
+    $result = $apiClient->headlessChromeFromUrl('http://www.api2pdf.com');
     
 ---
 
