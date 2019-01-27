@@ -1,10 +1,10 @@
 {
   "name": "api2pdf/api2pdf.php",
-  "description": "A client library for API2PDF service",
+  "description": "A client library for API2PDF service to convert HTML to PDF",
   "license": "MIT",
   "homepage": "https://www.api2pdf.com",
   "support": {
-    "source": "https://github.com/api2pdf/api2pdf"
+    "source": "https://github.com/api2pdf/api2pdf.php"
   },
   "require": {
     "php": ">=5.6",
