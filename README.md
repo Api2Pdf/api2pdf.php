@@ -18,7 +18,7 @@ Add this repository to your Composer file:
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/api2pdf/api2pdf"
+            "url": "https://github.com/api2pdf/api2pdf.php"
         }
     ],
 ```
@@ -29,11 +29,11 @@ Run the following from command line:
 
 ## Usage without Composer
 
-Copy api2pdf.php directory to a sub-directory in your project, then add the following in the beginning of your PHP file:
+Copy the files in the `src` directory to a sub-directory in your project, then add the following in the beginning of your PHP file:
 
 ```
-require_once 'api2pdf.php/src/Api2Pdf.php';
-require_once 'api2pdf.php/src/ApiResult.php';
+require_once 'your-own-directory/Api2Pdf.php';
+require_once 'your-own-directory/ApiResult.php';
 
 use Api2Pdf\Api2Pdf;
 ```
