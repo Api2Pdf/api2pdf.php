@@ -261,4 +261,37 @@ class Api2Pdf
         return $this->makeRequest('/libreoffice/convert', $payload);
     }
 
+    /**
+     * @param string $responseId
+     *
+     * @return ApiResult
+     * @throws ConversionException
+     * @throws ProtocolException
+     */
+    public function delete($responseId) {
+        $url = self::API2PDF_API_URL . '/pdf/'. $responseId;
+
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'Authorization: '.$this->apiKey
+            ]
+        );
+
+        $response = curl_exec($ch);
+
+        if ($response === false) {
+            throw new ProtocolException(curl_error($ch) ?: 'API request failed');
+        }
+
+        return ApiResult::createFromResponse($response);
+    }
 }
