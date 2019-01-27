@@ -7,8 +7,8 @@ Api2Pdf.com is a REST API for instantly generating PDF documents from HTML, URLs
 - [Resources](#resources)
 - [Authorization](#authorization)
 - [Usage](#usage)
+- [Helper Methods](#helper-methods)
 - [FAQ](https://www.api2pdf.com/faq)
-
 
 ## <a name="installation"></a>Installation
 
@@ -223,4 +223,18 @@ To use the merge endpoint, supply a list of URLs to existing PDFs. The engine wi
     $apiClient->setFilename('test.pdf');
     $linksToPdfs = ['https://LINK-TO-PDF', 'https://LINK-TO-PDF'];
     $mergeResult = $apiClient->merge($linksToPdfs)
+    
+---
+
+## <a name="helper-methods"></a>Helper Methods
+
+**delete($responseId)**
+
+By default, Api2Pdf deletes your PDFs 24 hours after they have been generated. For developers who require higher levels of security and wish to delete their PDFs can make a DELETE request API call by using the `responseId` retrieved from the original request.
+
+    $result = $apiClient->headlessChromeFromHtml("<p>Hello World</p>");
+    $responseId = $result->getResponseId();
+    //delete pdf
+    $apiClient->delete($responseId);
+
     
