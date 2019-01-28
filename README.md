@@ -7,7 +7,6 @@ Api2Pdf.com is a REST API for instantly generating PDF documents from HTML, URLs
 - [Resources](#resources)
 - [Authorization](#authorization)
 - [Usage](#usage)
-- [Helper Methods](#helper-methods)
 - [FAQ](https://www.api2pdf.com/faq)
 
 ## <a name="installation"></a>Installation
@@ -46,6 +45,7 @@ Resources this API supports:
 - [Headless Chrome](#chrome)
 - [LibreOffice](#libreoffice)
 - [Merge / Concatenate PDFs](#merge)
+- [Helper Methods](#helper-methods)
 
 ## <a name="authorization"></a>Authorization
 
