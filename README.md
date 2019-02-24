@@ -11,7 +11,7 @@ Api2Pdf.com is a REST API for instantly generating PDF documents from HTML, URLs
 
 ## <a name="installation"></a>Installation
 
-Add this repository to your Composer file:
+Add this repository to your Composer file (you can also find us on [Packagist](https://packagist.org/packages/api2pdf/api2pdf.php)):
 
 ```
     "repositories": [
