@@ -16,25 +16,30 @@ class Api2Pdf
 
     /**
      * @var bool
+     * @deprecated Use the method argument $options['inline'] instead.
      */
     private $inline = false;
 
     /**
      * @var string|null
+     * @deprecated Use the method argument $options['filename'] instead.
      */
     private $filename = null;
 
     /**
      * @var array
+     * @deprecated Use the method argument $options instead.
      */
     private $options = [];
 
-    public function __construct($apiKey) {
+    public function __construct($apiKey)
+    {
         $this->apiKey = $apiKey;
     }
 
     /**
      * @return bool
+     * @deprecated
      */
     public function isInline()
     {
@@ -45,6 +50,8 @@ class Api2Pdf
      * @param bool $inline
      *
      * @return Api2Pdf
+     *
+     * @deprecated Use the method argument $options['inline'] instead.
      */
     public function setInline($inline)
     {
@@ -55,6 +62,7 @@ class Api2Pdf
 
     /**
      * @return string|null
+     * @deprecated
      */
     public function getFilename()
     {
@@ -65,6 +73,8 @@ class Api2Pdf
      * @param string|null $filename
      *
      * @return Api2Pdf
+     *
+     * @deprecated Use the method argument $options['filename'] instead.
      */
     public function setFilename($filename)
     {
@@ -101,12 +111,13 @@ class Api2Pdf
      * @throws ConversionException
      * @throws Exception\ProtocolException
      */
-    private function makeRequest($endpoint, $payload) {
+    private function makeRequest($endpoint, $payload)
+    {
         $url = self::API2PDF_API_URL . $endpoint;
 
         $ch = curl_init($url);
 
-        $jsonDataEncoded =  json_encode($payload);
+        $jsonDataEncoded = json_encode($payload);
 
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
@@ -118,7 +129,7 @@ class Api2Pdf
             $ch,
             CURLOPT_HTTPHEADER, [
                 'Content-Type: application/json',
-                'Authorization: '.$this->apiKey
+                'Authorization: ' . $this->apiKey
             ]
         );
 
@@ -132,37 +143,41 @@ class Api2Pdf
     }
 
     /**
-     * @param bool $withOptions
-     *
+     * @param null $filename
+     * @param bool $inline
+     * @param null $options
      * @return array
      */
-    private function buildPayloadBase($withOptions = true)
+    private function buildPayloadBase($filename, $inline, $options = null)
     {
         $payload = [
-            'inlinePdf' => $this->inline,
+            'inlinePdf' => $inline
         ];
 
-        if (!is_null($this->filename)) {
-            $payload["fileName"] = $this->filename;
+        if (!is_null($filename)) {
+            $payload["fileName"] = $filename;
         }
 
-        if ($withOptions && !empty($this->options)) {
-            $payload["options"] = $this->options;
+        if (!empty($options)) {
+            $payload["options"] = $options;
         }
 
         return $payload;
     }
 
     /**
-     * @param string $url
-     *
+     * @param $url
+     * @param null $filename
+     * @param bool $inline
+     * @param array $options
      * @return ApiResult
      * @throws ConversionException
      * @throws ProtocolException
      */
-    public function headlessChromeFromUrl($url) {
+    public function headlessChromeFromUrl($url, $filename = null, $inline = false, $options = null)
+    {
         $payload = array_merge(
-            $this->buildPayloadBase(),
+            $this->buildPayloadBase($filename, $inline, $options),
             [
                 'url' => $url,
             ]
@@ -172,15 +187,18 @@ class Api2Pdf
     }
 
     /**
-     * @param string $html
-     *
+     * @param $html
+     * @param null $filename
+     * @param bool $inline
+     * @param null $options
      * @return ApiResult
      * @throws ConversionException
      * @throws ProtocolException
      */
-    public function headlessChromeFromHtml($html) {
+    public function headlessChromeFromHtml($html, $filename = null, $inline = false, $options = null)
+    {
         $payload = array_merge(
-            $this->buildPayloadBase(),
+            $this->buildPayloadBase($filename, $inline, $options),
             [
                 'html' => $html,
             ]
@@ -190,15 +208,18 @@ class Api2Pdf
     }
 
     /**
-     * @param string $url
-     *
+     * @param $url
+     * @param null $filename
+     * @param bool $inline
+     * @param array $options
      * @return ApiResult
      * @throws ConversionException
      * @throws ProtocolException
      */
-    public function wkHtmlToPdfFromUrl($url) {
+    public function wkHtmlToPdfFromUrl($url, $filename = null, $inline = false, $options = null)
+    {
         $payload = array_merge(
-            $this->buildPayloadBase(),
+            $this->buildPayloadBase($filename, $inline, $options),
             [
                 'url' => $url,
             ]
@@ -208,15 +229,18 @@ class Api2Pdf
     }
 
     /**
-     * @param string $html
-     *
+     * @param $html
+     * @param null $filename
+     * @param bool $inline
+     * @param null $options
      * @return ApiResult
      * @throws ConversionException
      * @throws ProtocolException
      */
-    public function wkHtmlToPdfFromHtml($html) {
+    public function wkHtmlToPdfFromHtml($html, $filename = null, $inline = false, $options = null)
+    {
         $payload = array_merge(
-            $this->buildPayloadBase(),
+            $this->buildPayloadBase($filename, $inline, $options),
             [
                 'html' => $html,
             ]
@@ -227,14 +251,16 @@ class Api2Pdf
 
     /**
      * @param array $urls
-     *
+     * @param null $filename
+     * @param bool $inline
      * @return ApiResult
      * @throws ConversionException
      * @throws ProtocolException
      */
-    public function merge(array $urls) {
+    public function merge(array $urls, $filename = null, $inline = false)
+    {
         $payload = array_merge(
-            $this->buildPayloadBase(false),
+            $this->buildPayloadBase($filename, $inline, null),
             [
                 'urls' => $urls,
             ]
@@ -246,13 +272,16 @@ class Api2Pdf
     /**
      * @param string $url
      *
+     * @param null $filename
+     * @param bool $inline
      * @return ApiResult
      * @throws ConversionException
      * @throws ProtocolException
      */
-    public function libreOfficeConvert($url) {
+    public function libreOfficeConvert($url, $filename = null, $inline = false)
+    {
         $payload = array_merge(
-            $this->buildPayloadBase(false),
+            $this->buildPayloadBase($filename, $inline),
             [
                 'url' => $url,
             ]
