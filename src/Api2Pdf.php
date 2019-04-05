@@ -297,8 +297,9 @@ class Api2Pdf
      * @throws ConversionException
      * @throws ProtocolException
      */
-    public function delete($responseId) {
-        $url = self::API2PDF_API_URL . '/pdf/'. $responseId;
+    public function delete($responseId)
+    {
+        $url = self::API2PDF_API_URL . '/pdf/' . $responseId;
 
         $ch = curl_init($url);
 
@@ -311,7 +312,7 @@ class Api2Pdf
             $ch,
             CURLOPT_HTTPHEADER, [
                 'Content-Type: application/json',
-                'Authorization: '.$this->apiKey
+                'Authorization: ' . $this->apiKey
             ]
         );
 
