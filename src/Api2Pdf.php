@@ -5,7 +5,7 @@ namespace Api2Pdf;
 use Api2Pdf\Exception\ProtocolException;
 use Api2Pdf\Exception\ConversionException;
 
-class Api2Pdf
+class Api2Pdf implements Api2PdfInterface
 {
     const API2PDF_API_URL = 'https://v2018.api2pdf.com';
 
