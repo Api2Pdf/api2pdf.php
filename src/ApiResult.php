@@ -54,7 +54,7 @@ class ApiResult
 
         $apiResponse = new static();
 
-        $apiResponse->pdf = $data['pdf'];
+        $apiResponse->pdf = isset($data['pdf'])?$data['pdf']: null;
         $apiResponse->mbIn = $data['mbIn'];
         $apiResponse->mbOut = $data['mbOut'];
         $apiResponse->cost = $data['cost'];
