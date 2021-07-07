@@ -1,7 +1,7 @@
 # api2pdf.php
-PHP code for [Api2Pdf REST API](https://www.api2pdf.com/documentation) 
+PHP code for [Api2Pdf REST API](https://www.api2pdf.com/documentation/v2) 
 
-Api2Pdf.com is a REST API for instantly generating PDF documents from HTML, URLs, Microsoft Office Documents (Word, Excel, PPT), and images. The API also supports merge / concatenation of two or more PDFs. Api2Pdf is a wrapper for popular libraries such as **wkhtmltopdf**, **Headless Chrome**, and **LibreOffice**.
+Api2Pdf.com is a powerful REST API for instantly generating PDF and Office documents from HTML, URLs, Microsoft Office Documents (Word, Excel, PPT), Email files, and images. You can generate image preview or thumbnail of a PDF, office document, or email file. The API also supports merge / concatenation of two or more PDFs, setting passwords on PDFs, and adding bookmarks to PDFs. Api2Pdf is a wrapper for popular libraries such as **wkhtmltopdf**, **Headless Chrome**, **PdfSharp**, and **LibreOffice**.
 
 - [Installation](#installation)
 - [Resources](#resources)
@@ -28,13 +28,11 @@ Run the following from command line:
 
 ## Usage without Composer
 
-Copy the files in the `src` directory to a sub-directory in your project, then add the following in the beginning of your PHP file:
+Copy the file in the `src` directory to a sub-directory in your project, then add the following in the beginning of your PHP file:
 
 ```
 require_once 'your-own-directory/Api2Pdf.php';
-require_once 'your-own-directory/ApiResult.php';
 
-use Api2Pdf\Api2Pdf;
 ```
 
 ## <a name="resources"></a>Resources
@@ -63,68 +61,56 @@ All usage starts by calling the import command and initializing the client by pa
 
 Once you initialize the client, you can make calls like so:
 
-    $result = $apiClient->headlessChromeFromHtml('<p>Hello, World</p>');
-    echo $result->getPdf();
+    $result = $apiClient->chromeHtmlToPdf('<p>Hello, World</p>');
+    echo $result->getFile();
     
 ### Result Format
 
 An ApiResult object is returned from every API call. If a call is unsuccessful then an exception will be thrown with a message containing the result of failure. 
 
-Additional attributes include the total data usage in, out, and the cost for the API call, typically very small fractions of a penny.
+Additional attributes include the total data usage out, and the cost for the API call, typically very small fractions of a penny.
 
-    $pdfLink = $result->getPdf();
-    $mbIn = $result->getMbIn();
-    $mbOut = $result->getMbOut();
+    $file = $result->getFile();
     $cost = $result->getCost();
+    $mbOut = $result->getMbOut();
+    $seconds = $result->getSeconds();
     $responseId = $result->getResponseId();
     
 ### <a name="wkhtmltopdf"></a> wkhtmltopdf
 
 **Convert HTML to PDF**
 
-    $result = $apiClient->wkHtmlToPdfFromHtml('<p>Hello, World</p>');
+    $result = $apiClient->wkHtmlToPdf('<p>Hello, World</p>');
     
 **Convert HTML to PDF (load PDF in browser window and specify a file name)**
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $result = $apiClient->wkHtmlToPdfFromHtml('<p>Hello, World</p>');
+    $result = $apiClient->wkHtmlToPdf('<p>Hello, World</p>', $inline = false, $fileName = "test.pdf");
     
 **Convert HTML to PDF (use arguments for advanced wkhtmltopdf settings)**
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $apiClient->setOptions(
-        [
-            'orientation' => 'landscape', 
-            'pageSize'=> 'A4'
-        ]
-    );
-    $result = $apiClient->wkHtmlToPdfFromHtml('<p>Hello, World</p>');
+    $options = [
+        "orientation" => "landscape",
+        "pageSize" => "A4"
+    ];
+    $result = $apiClient->wkHtmlToPdf('<p>Hello, World</p>', $options = $options);
 
 **Convert URL to PDF**
 
-    $result = $apiClient->wkHtmlToPdfFromUrl('http://www.api2pdf.com');
+    $result = $apiClient->wkUrlToPdf('http://www.api2pdf.com');
     
 **Convert URL to PDF (load PDF in browser window and specify a file name)**
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $result = $apiClient->wkHtmlToPdfFromUrl('http://www.api2pdf.com');
+    $result = $apiClient->wkUrlToPdf('http://www.api2pdf.com', $inline = false, $fileName = "test.pdf");
     
 **Convert URL to PDF (use arguments for advanced wkhtmltopdf settings)**
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $apiClient->setOptions(
-        [
-            'orientation' => 'landscape', 
-            'pageSize'=> 'A4'
-        ]
-    );
-    $result = $apiClient->wkHtmlToPdfFromUrl('http://www.api2pdf.com');
+    $options = [
+        "orientation" => "landscape",
+        "pageSize" => "A4"
+    ];
+    $result = $apiClient->wkUrlToPdf('http://www.api2pdf.com', $options = $options);
 
 
 ---
@@ -133,96 +119,120 @@ Additional attributes include the total data usage in, out, and the cost for the
 
 **Convert HTML to PDF**
 
-    $result = $apiClient->headlessChromeFromHtml('<p>Hello, World</p>');
+    $result = $apiClient->chromeHtmlToPdf('<p>Hello, World</p>');
     
 **Convert HTML to PDF (load PDF in browser window and specify a file name)**
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $result = $apiClient->headlessChromeFromHtml('<p>Hello, World</p>');
+    $result = $apiClient->chromeHtmlToPdf('<p>Hello, World</p>', $inline = false, $filename = "test.pdf");
     
 **Convert HTML to PDF (use arguments for advanced Headless Chrome settings)**
 [View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $apiClient->setOptions(
-        [
-            'landscape' => true, 
-            'printBackground' => false
-        ]
-    );        
-    $result = $apiClient->headlessChromeFromHtml('<p>Hello, World</p>');
+    $options = [
+        "landscape" => true
+    ];
+    $result = $apiClient->chromeHtmlToPdf('<p>Hello, World</p>', $options = $options);
 
 **Convert URL to PDF**
 
-    $result = $apiClient->headlessChromeFromUrl('http://www.api2pdf.com');
+    $result = $apiClient->chromeUrlToPdf('http://www.api2pdf.com');
     
 **Convert URL to PDF (load PDF in browser window and specify a file name)**
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $result = $apiClient->headlessChromeFromUrl('http://www.api2pdf.com');
+    $result = $apiClient->chromeUrlToPdf('http://www.api2pdf.com', $inline = false, $filename = "test.pdf");
     
 **Convert URL to PDF (use arguments for advanced Headless Chrome settings)**
 [View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $apiClient->setOptions(
-        [
-            'landscape' => true, 
-            'printBackground' => false
-        ]
-    );        
-    $result = $apiClient->headlessChromeFromUrl('http://www.api2pdf.com');
+    $options = [
+        "landscape" => true
+    ];
+    $result = $apiClient->chromeUrlToPdf('http://www.api2pdf.com', $options = $options);
+
+**Convert HTML to Image**
+
+    $result = $apiClient->chromeHtmlToImage('<p>Hello, World</p>');
+    
+**Convert HTML to Image (load image in browser window and specify a file name)**
+
+    $result = $apiClient->chromeHtmlToImage('<p>Hello, World</p>', $inline = false, $filename = "test.jpg");
+    
+**Convert HTML to Image (use arguments for advanced Headless Chrome settings)**
+[View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
+
+    $options = [
+        "fullPage" => true
+    ];
+    $result = $apiClient->chromeHtmlToImage('<p>Hello, World</p>', $options = $options);
+
+**Convert URL to Image**
+
+    $result = $apiClient->chromeUrlToImage('http://www.api2pdf.com');
+    
+**Convert URL to Image (load image in browser window and specify a file name)**
+
+    $result = $apiClient->chromeUrlToImage('http://www.api2pdf.com', $inline = false, $filename = "test.jpg");
+    
+**Convert URL to Image (use arguments for advanced Headless Chrome settings)**
+[View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
+
+    $options = [
+        "landscape" => true
+    ];
+    $result = $apiClient->chromeUrlToImage('http://www.api2pdf.com', $options = $options);
     
 ---
 
 ## <a name="libreoffice"></a>LibreOffice
 
-LibreOffice supports the conversion to PDF from the following file formats:
+Convert any office file to PDF, image file to PDF, email file to PDF, HTML to Word, HTML to Excel, and PDF to HTML. Any file that can be reasonably opened by LibreOffice should be convertible. Additionally, we have an endpoint for generating a *thumbnail* of the first page of your PDF or Office Document. This is great for generating an image preview of your files to users.
 
-- doc / docx
-- xls / xlsx
-- ppt / pptx
-- gif
-- jpg
-- png
-- bmp
-- rtf
-- txt 
-- html
-
-You must provide a URL to the file. Our engine will consume the file at that URL and convert it to the PDF.
+You must provide a url to the file. Our engine will consume the file at that URL and convert it to the PDF.
 
 **Convert Microsoft Office Document or Image to PDF**
 
-    $result = $apiClient->libreOfficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx');
-    
-**Convert Microsoft Office Document or Image to PDF (load PDF in browser window and specify a file name)**
+    $result = $apiClient->libreOfficeAnyToPdf('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx');
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $result = $apiClient->libreOfficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx');
-    
+**Thumbnail or Image Preview of a PDF or Office Document or Email file**
+
+    $result = $apiClient->libreOfficeThumbnail('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx');
+
+**Convert HTML to Microsoft Word or Docx**
+
+    $result = $apiClient->libreOfficeHtmlToDocx('http://www.api2pdf.com/wp-content/uploads/2021/01/sampleHtml.html');
+
+**Convert HTML to Microsoft Excel or Xlsx**
+
+    $result = $apiClient->libreOfficeHtmlToXlsx('http://www.api2pdf.com/wp-content/uploads/2021/01/sampleTables.html');
+
+**Convert PDF to HTML**
+
+    $result = $apiClient->libreOfficePdfToHtml('http://www.api2pdf.com/wp-content/uploads/2021/01/1a082b03-2bd6-4703-989d-0443a88e3b0f-4.pdf');    
 ---
     
-## <a name="merge"></a>Merge / Concatenate Two or More PDFs
+## <a name="merge"></a>PdfSharp - Merge / Concatenate Two or More PDFs, Add bookmarks to pdfs, add passwords to pdfs
 
-To use the merge endpoint, supply a list of URLs to existing PDFs. The engine will consume all of the PDFs and merge them into a single PDF, in the order in which they were provided in the list.
+To use the merge endpoint, supply a list of urls to existing PDFs. The engine will consume all of the PDFs and merge them into a single PDF, in the order in which they were provided in the list.
 
 **Merge PDFs from list of URLs to existing PDFs**
 
     $linksToPdfs = ['https://LINK-TO-PDF', 'https://LINK-TO-PDF'];
-    $mergeResult = $apiClient->merge($linksToPdfs)
+    $mergeResult = $apiClient->pdfsharpMerge($linksToPdfs)
 
-**Merge PDFs from list of URLs to existing PDFs (load PDF in browser window and specify a file name)**
+**Add bookmarks to existing PDF**
 
-    $apiClient->setInline(true);
-    $apiClient->setFilename('test.pdf');
-    $linksToPdfs = ['https://LINK-TO-PDF', 'https://LINK-TO-PDF'];
-    $mergeResult = $apiClient->merge($linksToPdfs)
+    $linkToPdf = 'https://LINK-TO-PDF';
+    $bookmarks = [
+        [ "Page" => 0, "Title" => "Introduction" ],
+        [ "Page" => 1, "Title" => "Second page" ] 
+    ];
+    $bookmarkResult = $apiClient->pdfsharpMerge($linkToPdf, $bookmarks)
+
+**Add password to existing PDF**
+
+    $linkToPdf = 'https://LINK-TO-PDF';
+    $userpassword = 'hello';
+    $bookmarkResult = $apiClient->pdfsharpMerge($linkToPdf, $userpassword)
     
 ---
 
@@ -230,11 +240,11 @@ To use the merge endpoint, supply a list of URLs to existing PDFs. The engine wi
 
 **delete($responseId)**
 
-By default, Api2Pdf deletes your PDFs 24 hours after they have been generated. For developers who require higher levels of security and wish to delete their PDFs can make a DELETE request API call by using the `responseId` retrieved from the original request.
+By default, Api2Pdf will delete your generated file 24 hours after it has been generated. For those with high security needs, you may want to delete your file on command. You can do so by making an DELETE api call with the `responseId` attribute that was returned on the original JSON payload.
 
-    $result = $apiClient->headlessChromeFromHtml("<p>Hello World</p>");
+    $result = $apiClient->chromeHtmlToPdf("<p>Hello World</p>");
     $responseId = $result->getResponseId();
     //delete pdf
-    $apiClient->delete($responseId);
+    $apiClient->utilityDelete($responseId);
 
     
