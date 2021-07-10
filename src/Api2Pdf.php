@@ -1,264 +1,280 @@
 <?php
 
-namespace Api2Pdf;
-
-use Api2Pdf\Exception\ProtocolException;
-use Api2Pdf\Exception\ConversionException;
-
-class Api2Pdf
+interface Api2PdfInterface
 {
-    const API2PDF_API_URL = 'https://v2018.api2pdf.com';
+    public function chromeUrlToPdf($url, $inline = true, $filename = null, $options = null);
+    public function chromeHtmlToPdf($html, $inline = true, $filename = null, $options = null);
+    public function chromeUrlToImage($url, $inline = true, $filename = null, $options = null);
+    public function chromeHtmlToImage($html, $inline = true, $filename = null, $options = null);
+    public function wkUrlToPdf($url, $inline = true, $filename = null, $options = null, $enableToc = false);
+    public function wkHtmlToPdf($html, $inline = true, $filename = null, $options = null, $enableToc = false);
+    public function libreOfficeAnyToPdf($url, $inline = true, $filename = null);
+    public function libreOfficeThumbnail($url, $inline = true, $filename = null);
+    public function libreOfficePdfToHtml($url, $inline = true, $filename = null);
+    public function libreOfficeHtmlToDocx($url, $inline = true, $filename = null);
+    public function libreOfficeHtmlToXlsx($url, $inline = true, $filename = null);
+    public function pdfsharpMerge($urls, $inline = true, $filename = null);
+    public function pdfsharpAddBookmarks($url, $bookmarks, $inline = true, $filename = null);
+    public function pdfsharpAddPassword($url, $userpassword, $ownerpassword = null, $inline = true, $filename = null);
+    public function utilityDelete($responseId);
+}
 
+class Api2Pdf implements Api2PdfInterface
+{
     /**
      * @var string|null
      */
     private $apiKey = null;
 
     /**
-     * @var bool
-     */
-    private $inline = false;
-
-    /**
      * @var string|null
      */
-    private $filename = null;
+    private $base_url = null;
 
-    /**
-     * @var array
-     */
-    private $options = [];
-
-    public function __construct($apiKey) {
+    public function __construct($apiKey, $base_url = 'https://v2.api2pdf.com') {
         $this->apiKey = $apiKey;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isInline()
-    {
-        return $this->inline;
-    }
-
-    /**
-     * @param bool $inline
-     *
-     * @return Api2Pdf
-     */
-    public function setInline($inline)
-    {
-        $this->inline = $inline;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
-     * @param string|null $filename
-     *
-     * @return Api2Pdf
-     */
-    public function setFilename($filename)
-    {
-        $this->filename = $filename;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * @param array $options
-     *
-     * @return Api2Pdf
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-
-        return $this;
-    }
-
-    /**
-     * @param $endpoint
-     * @param $payload
-     *
-     * @return ApiResult
-     * @throws ConversionException
-     * @throws Exception\ProtocolException
-     */
-    private function makeRequest($endpoint, $payload) {
-        $url = self::API2PDF_API_URL . $endpoint;
-
-        $ch = curl_init($url);
-
-        $jsonDataEncoded =  json_encode($payload);
-
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
-
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json',
-                'Authorization: '.$this->apiKey
-            ]
-        );
-
-        $response = curl_exec($ch);
-
-        if ($response === false) {
-            throw new ProtocolException(curl_error($ch) ?: 'API request failed');
-        }
-
-        return ApiResult::createFromResponse($response);
-    }
-
-    /**
-     * @param bool $withOptions
-     *
-     * @return array
-     */
-    private function buildPayloadBase($withOptions = true)
-    {
-        $payload = [
-            'inlinePdf' => $this->inline,
-        ];
-
-        if (!is_null($this->filename)) {
-            $payload["fileName"] = $this->filename;
-        }
-
-        if ($withOptions && !empty($this->options)) {
-            $payload["options"] = $this->options;
-        }
-
-        return $payload;
+        $this->base_url = $base_url;
     }
 
     /**
      * @param string $url
-     *
-     * @return ApiResult
-     * @throws ConversionException
-     * @throws ProtocolException
+     * @throws Api2PdfException
+     * @return Api2PdfResult
      */
-    public function headlessChromeFromUrl($url) {
+    public function chromeUrlToPdf($url, $inline = true, $filename = null, $options = null) {
         $payload = array_merge(
-            $this->buildPayloadBase(),
+            $this->buildPayloadBase($inline, $filename, $options),
             [
                 'url' => $url,
             ]
         );
-
-        return $this->makeRequest('/chrome/url', $payload);
+        return $this->makeRequest('/chrome/pdf/url', $payload);
     }
 
     /**
      * @param string $html
      *
-     * @return ApiResult
-     * @throws ConversionException
-     * @throws ProtocolException
+     * @throws Api2PdfException
+     * @return Api2PdfResult
      */
-    public function headlessChromeFromHtml($html) {
+    public function chromeHtmlToPdf($html, $inline = true, $filename = null, $options = null) {
         $payload = array_merge(
-            $this->buildPayloadBase(),
+            $this->buildPayloadBase($inline, $filename, $options),
             [
                 'html' => $html,
             ]
         );
 
-        return $this->makeRequest('/chrome/html', $payload);
+        return $this->makeRequest('/chrome/pdf/html', $payload);
     }
 
     /**
      * @param string $url
-     *
-     * @return ApiResult
-     * @throws ConversionException
-     * @throws ProtocolException
+     * @throws Api2PdfException
+     * @return Api2PdfResult
      */
-    public function wkHtmlToPdfFromUrl($url) {
+    public function chromeUrlToImage($url, $inline = true, $filename = null, $options = null) {
         $payload = array_merge(
-            $this->buildPayloadBase(),
+            $this->buildPayloadBase($inline, $filename, $options),
             [
                 'url' => $url,
             ]
         );
-
-        return $this->makeRequest('/wkhtmltopdf/url', $payload);
+        return $this->makeRequest('/chrome/image/url', $payload);
     }
 
     /**
      * @param string $html
      *
-     * @return ApiResult
-     * @throws ConversionException
-     * @throws ProtocolException
+     * @throws Api2PdfException
+     * @return Api2PdfResult
      */
-    public function wkHtmlToPdfFromHtml($html) {
+    public function chromeHtmlToImage($html, $inline = true, $filename = null, $options = null) {
         $payload = array_merge(
-            $this->buildPayloadBase(),
+            $this->buildPayloadBase($inline, $filename, $options),
             [
                 'html' => $html,
             ]
         );
 
-        return $this->makeRequest('/wkhtmltopdf/html', $payload);
+        return $this->makeRequest('/chrome/image/html', $payload);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    public function wkUrlToPdf($url, $inline = true, $filename = null, $options = null, $enableToc = false) {
+        $payload = array_merge(
+            $this->buildPayloadBase($inline, $filename, $options),
+            [
+                'url' => $url,
+                'enableToc' => $enableToc
+            ]
+        );
+
+        return $this->makeRequest('/wkhtml/pdf/url', $payload);
+    }
+
+    /**
+     * @param string $html
+     *
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    public function wkHtmlToPdf($html, $inline = true, $filename = null, $options = null, $enableToc = false) {
+        $payload = array_merge(
+            $this->buildPayloadBase($inline, $filename, $options),
+            [
+                'html' => $html,
+                'enableToc' => $enableToc
+            ]
+        );
+
+        return $this->makeRequest('/wkhtml/pdf/html', $payload);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    public function libreOfficeAnyToPdf($url, $inline = true, $filename = null) {
+        $payload = array_merge(
+            $this->buildPayloadBase($inline, $filename),
+            [
+                'url' => $url,
+            ]
+        );
+
+        return $this->makeRequest('/libreoffice/any-to-pdf', $payload);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    public function libreOfficeThumbnail($url, $inline = true, $filename = null) {
+        $payload = array_merge(
+            $this->buildPayloadBase($inline, $filename),
+            [
+                'url' => $url,
+            ]
+        );
+
+        return $this->makeRequest('/libreoffice/thumbnail', $payload);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    public function libreOfficePdfToHtml($url, $inline = true, $filename = null) {
+        $payload = array_merge(
+            $this->buildPayloadBase($inline, $filename),
+            [
+                'url' => $url,
+            ]
+        );
+
+        return $this->makeRequest('/libreoffice/pdf-to-html', $payload);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    public function libreOfficeHtmlToDocx($url, $inline = true, $filename = null) {
+        $payload = array_merge(
+            $this->buildPayloadBase($inline, $filename),
+            [
+                'url' => $url,
+            ]
+        );
+
+        return $this->makeRequest('/libreoffice/html-to-docx', $payload);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    public function libreOfficeHtmlToXlsx($url, $inline = true, $filename = null) {
+        $payload = array_merge(
+            $this->buildPayloadBase($inline, $filename),
+            [
+                'url' => $url,
+            ]
+        );
+
+        return $this->makeRequest('/libreoffice/html-to-xlsx', $payload);
     }
 
     /**
      * @param array $urls
      *
-     * @return ApiResult
-     * @throws ConversionException
-     * @throws ProtocolException
+     * @throws Api2PdfException
+     * @return Api2PdfResult
      */
-    public function merge(array $urls) {
+    public function pdfsharpMerge($urls, $inline = true, $filename = null) {
         $payload = array_merge(
-            $this->buildPayloadBase(false),
+            $this->buildPayloadBase($inline, $filename),
             [
                 'urls' => $urls,
             ]
         );
 
-        return $this->makeRequest('/merge', $payload);
+        return $this->makeRequest('/pdfsharp/merge', $payload);
     }
 
     /**
-     * @param string $url
-     *
-     * @return ApiResult
-     * @throws ConversionException
-     * @throws ProtocolException
+     * @param $url
+     * @param $bookmarks
+     * @throws Api2PdfException
+     * @return Api2PdfResult
      */
-    public function libreOfficeConvert($url) {
+    public function pdfsharpAddBookmarks($url, $bookmarks, $inline = true, $filename = null) {
         $payload = array_merge(
-            $this->buildPayloadBase(false),
+            $this->buildPayloadBase($inline, $filename),
             [
                 'url' => $url,
+                'bookmarks' => $bookmarks
             ]
         );
 
-        return $this->makeRequest('/libreoffice/convert', $payload);
+        return $this->makeRequest('/pdfsharp/bookmarks', $payload);
+    }
+
+    /**
+     * @param $url
+     * @param $bookmarks
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    public function pdfsharpAddPassword($url, $userpassword, $ownerpassword = null, $inline = true, $filename = null) {
+        $payload = array_merge(
+            $this->buildPayloadBase($inline, $filename),
+            [
+                'url' => $url,
+                'userpassword' => $userpassword
+            ]
+        );
+
+        if (!is_null($ownerpassword))
+            $payload['ownerpassword'] = $ownerpassword;
+
+        return $this->makeRequest('/pdfsharp/password', $payload);
     }
 
     /**
@@ -268,8 +284,8 @@ class Api2Pdf
      * @throws ConversionException
      * @throws ProtocolException
      */
-    public function delete($responseId) {
-        $url = self::API2PDF_API_URL . '/pdf/'. $responseId;
+    public function utilityDelete($responseId) {
+        $url = $this->base_url . '/file/'. $responseId;
 
         $ch = curl_init($url);
 
@@ -289,9 +305,173 @@ class Api2Pdf
         $response = curl_exec($ch);
 
         if ($response === false) {
-            throw new ProtocolException(curl_error($ch) ?: 'API request failed');
+            throw new Api2PdfException(curl_error($ch) ?: 'API request failed');
         }
 
-        return ApiResult::createFromResponse($response);
+        return Api2PdfResult::createFromResponse($response);
+    }
+
+        /**
+     * @param $endpoint
+     * @param $payload
+     * @throws Api2PdfException
+     * @return Api2PdfResult
+     */
+    private function makeRequest($endpoint, $payload) {
+        $url = $this->base_url . $endpoint;
+
+        $ch = curl_init($url);
+
+        $jsonDataEncoded =  json_encode($payload);
+        echo($jsonDataEncoded);
+
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonDataEncoded);
+
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'Authorization: '.$this->apiKey
+            ]
+        );
+
+        $response = curl_exec($ch);
+
+        if ($response === false) {
+            throw new Api2PdfException(curl_error($ch) ?: 'API request failed');
+        }
+
+        return Api2PdfResult::createFromResponse($response);
+    }
+
+    /**
+     * @return array
+     */
+    private function buildPayloadBase($inline, $filename, $options = null)
+    {
+        $payload = [
+            'inline' => $inline,
+        ];
+
+        if (!is_null($filename)) {
+            $payload["fileName"] = $filename;
+        }
+
+        if (!is_null($options) && !empty($options)) {
+            $payload["options"] = $options;
+        }
+
+        return $payload;
     }
 }
+
+class Api2PdfResult
+{
+    /**
+     * @var string|null
+     */
+    private $file = null;
+
+    /**
+     * @var float|null
+     */
+    private $seconds = null;
+
+    /**
+     * @var float|null
+     */
+    private $mbOut = null;
+
+    /**
+     * @var float|null
+     */
+    private $cost = null;
+
+    /**
+     * @var string|null
+     */
+    private $responseId = null;
+
+    private $raw_json = null;
+
+    public static function createFromResponse($response)
+    {
+        $data = json_decode($response, true);
+
+        if ($data === false) {
+            throw new ProtocolException('Error decoding API response');
+        }
+
+        if (!isset($data['Success']) || !$data['Success']) {
+            if (isset($data['Error'])) {
+                $errorMessage = $data['Error'];
+            } else {
+                $errorMessage = 'Error response received from API';
+            }
+
+            throw new Api2PdfException($errorMessage);
+        }
+
+        $apiResponse = new static();
+
+        $apiResponse->file = isset($data['FileUrl'])?$data['FileUrl']: null;
+        $apiResponse->seconds = $data['Seconds'];
+        $apiResponse->mbOut = $data['MbOut'];
+        $apiResponse->cost = $data['Cost'];
+        $apiResponse->responseId = $data['ResponseId'];
+        $apiResponse->raw_json = $response;
+
+        return $apiResponse;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function getJson()
+    {
+        return $this->raw_json;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getSeconds()
+    {
+        return $this->seconds;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getMbOut()
+    {
+        return $this->mbOut;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getResponseId()
+    {
+        return $this->responseId;
+    }
+}
+
+class Api2PdfException extends Exception { }
