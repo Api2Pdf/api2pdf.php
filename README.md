@@ -226,13 +226,13 @@ To use the merge endpoint, supply a list of urls to existing PDFs. The engine wi
         [ "Page" => 0, "Title" => "Introduction" ],
         [ "Page" => 1, "Title" => "Second page" ] 
     ];
-    $bookmarkResult = $apiClient->pdfsharpMerge($linkToPdf, $bookmarks)
+    $bookmarkResult = $apiClient->pdfsharpAddBookmarks($linkToPdf, $bookmarks)
 
 **Add password to existing PDF**
 
     $linkToPdf = 'https://LINK-TO-PDF';
     $userpassword = 'hello';
-    $bookmarkResult = $apiClient->pdfsharpMerge($linkToPdf, $userpassword)
+    $bookmarkResult = $apiClient->pdfsharpAddPassword($linkToPdf, $userpassword)
     
 ---
 
