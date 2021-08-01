@@ -323,7 +323,6 @@ class Api2Pdf implements Api2PdfInterface
         $ch = curl_init($url);
 
         $jsonDataEncoded =  json_encode($payload);
-        echo($jsonDataEncoded);
 
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
