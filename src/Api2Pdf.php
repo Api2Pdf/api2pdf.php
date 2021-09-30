@@ -434,6 +434,14 @@ class Api2PdfResult
     {
         return $this->file;
     }
+    
+    /**
+     * @return string|null
+     */
+    public function getFileContents()
+    {
+        return $this->file ? file_get_contents($this->file) : null;
+    }
 
     public function getJson()
     {
