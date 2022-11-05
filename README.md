@@ -97,7 +97,7 @@ $options = [
     "orientation" => "landscape",
     "pageSize" => "A4"
 ];
-$result = $apiClient->wkHtmlToPdf('<p>Hello, World</p>', $options = $options);
+$result = $apiClient->wkHtmlToPdf('<p>Hello, World</p>', $inline = false, $filename = "test.pdf", $options = $options);
 ```
 
 **Convert URL to PDF**
@@ -120,7 +120,7 @@ $options = [
     "orientation" => "landscape",
     "pageSize" => "A4"
 ];
-$result = $apiClient->wkUrlToPdf('http://www.api2pdf.com', $options = $options);
+$result = $apiClient->wkUrlToPdf('http://www.api2pdf.com', $inline = false, $filename = "test.pdf", $options = $options);
 ```
 
 
@@ -147,7 +147,7 @@ $result = $apiClient->chromeHtmlToPdf('<p>Hello, World</p>', $inline = false, $f
 $options = [
     "landscape" => true
 ];
-$result = $apiClient->chromeHtmlToPdf('<p>Hello, World</p>', $options = $options);
+$result = $apiClient->chromeHtmlToPdf('<p>Hello, World</p>', $inline = false, $filename = "test.pdf", $options = $options);
 ```
 
 **Convert URL to PDF**
@@ -169,7 +169,7 @@ $result = $apiClient->chromeUrlToPdf('http://www.api2pdf.com', $inline = false, 
 $options = [
     "landscape" => true
 ];
-$result = $apiClient->chromeUrlToPdf('http://www.api2pdf.com', $options = $options);
+$result = $apiClient->chromeUrlToPdf('http://www.api2pdf.com', $inline = false, $filename = "test.pdf", $options = $options);
 ```
 
 **Convert HTML to Image**
@@ -191,7 +191,7 @@ $result = $apiClient->chromeHtmlToImage('<p>Hello, World</p>', $inline = false, 
 $options = [
     "fullPage" => true
 ];
-$result = $apiClient->chromeHtmlToImage('<p>Hello, World</p>', $options = $options);
+$result = $apiClient->chromeHtmlToImage('<p>Hello, World</p>', $inline = false, $filename = "test.jpg", $options = $options);
 ```
 
 **Convert URL to Image**
@@ -211,9 +211,9 @@ $result = $apiClient->chromeUrlToImage('http://www.api2pdf.com', $inline = false
 
 ```php
 $options = [
-    "landscape" => true
+    "fullPage" => true
 ];
-$result = $apiClient->chromeUrlToImage('http://www.api2pdf.com', $options = $options);
+$result = $apiClient->chromeUrlToImage('http://www.api2pdf.com', $inline = false, $filename = "test.jpg", $options = $options);
 ```
     
 ---
